@@ -1,0 +1,5 @@
+module.exports = {
+  entry: {
+    app: './path/to/my/entry/file.js',
+  },
+};
