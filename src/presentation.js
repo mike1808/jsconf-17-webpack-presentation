@@ -6,6 +6,7 @@ import {
   Appear,
   BlockQuote,
   Cite,
+  Code,
   CodePane,
   Deck,
   GoToAction,
@@ -26,7 +27,7 @@ import CodeSlide from 'spectacle-code-slide-forked';
 import createTheme from 'spectacle/lib/themes/default';
 import preloader from 'spectacle/lib/utils/preloader';
 
-import Footer from './components/Footer';
+import Header from './components/Header';
 
 // Require CSS
 require('normalize.css');
@@ -48,61 +49,127 @@ const theme = createTheme(
 const slideTransition = ['slide'];
 const codeFontSize = 24;
 
-const images = ({
+const images = {
   optimization: require('./images/opt.jpg'),
-});
+  me: 'https://jsconf.am/static/SpeakerMichaelManukyan.jpg',
+  teamable: require('./images/teamable.png'),
+  webpack: require('./images/webpack2.png'),
+  vendor1: require('./images/vendor-no-commons.png'),
+  vendor2: require('./images/vendor-commons.png'),
+};
+
+preloader(images);
+
+const Links = styled(List)`
+  position: absolute;
+  list-style: none;
+`;
 
 export default class Presentation extends Component {
   render() {
     return (
       <div>
+        <Header />
         <Deck
           transition={slideTransition}
           transitionDuration={500}
           theme={theme}
           progress="number"
+          contentWidth={1200}
         >
           <Slide transition={slideTransition}>
             <Heading size={1} lineHeight={1} textColor="tertiary">
               Creating Webpack 3 Config for Production From Scratch
             </Heading>
           </Slide>
-          <Slide transition={slideTransition}>
-            <Link textSize={38} textColor="tertiary" href="https://github.com/mike1808/jsconf-17-webpack">
-              https://github.com/mike1808/jsconf-17-webpack
-            </Link>
+          <Slide transition={slideTransition} bgColor="secondary" width="100vw">
+            <Layout>
+              <Fit width={300} margin="0 10">
+                <Heading size={4} textColor="primary">
+                  <code>whoami</code>
+                </Heading>
+                <Image src={images.me} alt="me" />
+              </Fit>
+              <Fill margin="0 100">
+                <List>
+                  <ListItem>
+                    <Text size={4} textColor="primary">
+                      software engineer
+                    </Text>
+                  </ListItem>
+                  <ListItem>
+                    <Text size={4} textColor="primary">
+                      mostly JavaScript
+                    </Text>
+                  </ListItem>
+                  <ListItem>
+                    <Text size={4} textColor="primary">
+                      Product Team Lead at Teamable
+                    </Text>
+                  </ListItem>
+                </List>
+              </Fill>
+            </Layout>
           </Slide>
           <Slide transition={slideTransition}>
             <Heading>
               Agenda
             </Heading>
-            <List ordered>
-              <Appear>
-                <ListItem>
-                  <Link href="#overview">Overview</Link>
-                </ListItem>
-              </Appear>
-              <Appear>
-                <ListItem>
-                  <Link href="#concepts">Concepts</Link>
-                </ListItem>
-              </Appear>
-              <Appear>
-                <ListItem>
-                  <Link href="#workspace">Workspace</Link>
-                </ListItem>
-              </Appear>
-              <Appear>
-                <ListItem>
-                  <Link href="#coding">Coding Session</Link>
-                </ListItem>
-              </Appear>
-              <Appear>
-                <ListItem>
-                  <Link href="#intro">Project Intro</Link>
-                </ListItem>
-              </Appear>
-            </List>
+            <Layout>
+              <Fill>
+                <List ordered>
+                  <ListItem>
+                    <Link href="#overview">Overview</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#concepts">Concepts</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#coding">Coding Session</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#intro">Project Intro</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#workspace">Workspace</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#optimization">Otimization</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#styles">Styles Optimization</Link>
+                  </ListItem>
+                </List>
+              </Fill>
+              <Fill>
+                <List ordered start={8}>
+                  <ListItem>
+                    <Link href="#styles">Styles Optimization</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#extra1">Extra 1</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#bundle-splitting">Bundle Splitting</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#caching">Caching</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#code-splitting">Code Splitting</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#extra2">Extra 2</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#analyze">Analyze</Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link href="#links">Further Materials</Link>
+                  </ListItem>
+                </List>
+              </Fill>
+            </Layout>
           </Slide>
           <Slide transition={slideTransition} bgColor="secondary" id="overview">
             <Heading caps size={2} textColor="tertiary">
@@ -161,12 +228,15 @@ export default class Presentation extends Component {
                 Bundler, <em>not</em> a task runner
               </ListItem></Appear>
               <Appear><ListItem>
-                Every asset becomes a <em>dependency</em> (js, css, html, png, svg, woff)
+                Every asset becomes a <em>dependency</em> (js, css, html, png, etc)
               </ListItem></Appear>
               <Appear><ListItem>
                 Static build (don't live in the runtime)
               </ListItem></Appear>
             </List>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary">
+            <Image src={images.webpack} />
           </Slide>
           <Slide transition={slideTransition} bgColor="secondary" id="concepts">
             <Heading caps size={2} textColor="tertiary">
@@ -222,7 +292,7 @@ export default class Presentation extends Component {
             </Appear>
             <Appear>
               <Text textAlign="left">
-                ² bundle - contain the final versions of source files that have already
+                ² bundle - file containing the final versions of source files that have already
                 undergone the loading and compilation process.
               </Text>
             </Appear>
@@ -240,7 +310,7 @@ export default class Presentation extends Component {
             </List>
             <Appear>
               <Text textAlign="left">
-                ¹ chunk - container for modules which typically becomes a module
+                ¹ chunk - container for modules which typically becomes a bundle
               </Text>
             </Appear>
           </Slide>
@@ -287,6 +357,20 @@ export default class Presentation extends Component {
               lang="javascript"
               source={require('!raw-loader!./examples/plugins.example')}
             />
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="coding">
+            <Heading caps size={2} textColor="tertiary">
+              Coding Session!
+            </Heading>
+            <Link textSize={38} textColor="tertiary" href="https://github.com/mike1808/jsconf-17-webpack"
+                  target="_blank">
+              https://github.com/mike1808/jsconf-17-webpack
+            </Link>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="intro">
+            <Heading caps size={2} textColor="tertiary">
+              Project Intro
+            </Heading>
           </Slide>
           <Slide transition={slideTransition} bgColor="secondary" id="workspace">
             <Heading caps size={2} textColor="tertiary">
@@ -379,17 +463,7 @@ export default class Presentation extends Component {
             ]}
             showLineNumbers={false}
           />
-          <Slide transition={slideTransition} bgColor="secondary" id="coding">
-            <Heading caps size={2} textColor="tertiary">
-              Coding Session!
-            </Heading>
-          </Slide>
-          <Slide transition={slideTransition} bgColor="secondary" id="intro">
-            <Heading caps size={2} textColor="tertiary">
-              Project Intro
-            </Heading>
-          </Slide>
-          <Slide transition={slideTransition}>
+          <Slide transition={slideTransition} id="optimization">
             <Heading caps size={2}>
               Optimization
             </Heading>
@@ -402,10 +476,12 @@ export default class Presentation extends Component {
             <List>
               <Appear><ListItem>Removing redundant parts w/o chaning its functionality</ListItem></Appear>
               <Appear><ListItem>
-                <Link href="https://github.com/webpack-contrib/uglifyjs-webpack-plugin">UglifyJS Plugin</Link>
+                <Link href="https://github.com/webpack-contrib/uglifyjs-webpack-plugin" target="_blank">UglifyJS
+                  Plugin</Link>
               </ListItem></Appear>
               <Appear><ListItem>
-                <Link href="https://github.com/webpack-contrib/css-loader#options">css-loader minimize:true</Link>
+                <Link href="https://github.com/webpack-contrib/css-loader#options" target="_blank">css-loader
+                  minimize:true</Link>
               </ListItem></Appear>
             </List>
           </Slide>
@@ -427,10 +503,16 @@ export default class Presentation extends Component {
               <Appear><ListItem>Some libraries have code that runs only in development</ListItem></Appear>
               <Appear><ListItem>It can be removed by using env vars</ListItem></Appear>
               <Appear><ListItem>
-                <Link href="https://webpack.js.org/plugins/define-plugin/">DefinePlugin</Link> substitutes your
+                <Link href="https://webpack.js.org/plugins/define-plugin/"
+                      target="_blank">DefinePlugin</Link> substitutes your
                 variables with its values at <em>compile</em> time
               </ListItem></Appear>
             </List>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="styles">
+            <Heading caps size={2} textColor="tertiary">
+              Styles
+            </Heading>
           </Slide>
           <Slide transition={slideTransition}>
             <Heading>
@@ -442,7 +524,8 @@ export default class Presentation extends Component {
               <Appear><ListItem>Prevent flash of unstyled content by loading the styles first</ListItem></Appear>
               <Appear><ListItem>
                 Achieved by using <Link
-                href="https://webpack.js.org/plugins/extract-text-webpack-plugin/">ExtractTextWebpackPlugin</Link>
+                href="https://webpack.js.org/plugins/extract-text-webpack-plugin/"
+                target="_blank">ExtractTextWebpackPlugin</Link>
               </ListItem></Appear>
             </List>
           </Slide>
@@ -452,11 +535,13 @@ export default class Presentation extends Component {
             </Heading>
             <List>
               <Appear><ListItem>Don't write vendor prefixes by hand</ListItem></Appear>
-              <Appear><ListItem>Use <Link to="https://www.npmjs.com/package/autoprefixer">autoprefixer</Link></ListItem></Appear>
+              <Appear><ListItem>Use <Link href="https://www.npmjs.com/package/autoprefixer"
+                                          target="_blank">autoprefixer</Link></ListItem></Appear>
               <Appear><ListItem>Specify supported browser using <Link
-                to="https://github.com/ai/browserslist">browserslist</Link></ListItem></Appear>
+                href="https://github.com/ai/browserslist" target="_blank">browserslist</Link></ListItem></Appear>
               <Appear><ListItem>Hook up to Webpack using <Link
-                to="https://webpack.js.org/loaders/postcss-loader/">postcss-loader</Link></ListItem></Appear>
+                href="https://webpack.js.org/loaders/postcss-loader/"
+                target="_blank">postcss-loader</Link></ListItem></Appear>
             </List>
           </Slide>
           <Slide transition={slideTransition}>
@@ -466,12 +551,285 @@ export default class Presentation extends Component {
             <List>
               <Appear><ListItem>Libraries contain many unused rules</ListItem></Appear>
               <Appear><ListItem>They can be removed using <Link
-                href="https://github.com/webpack-contrib/purifycss-webpack">PurifyCSS Plugin</Link>!</ListItem></Appear>
+                href="https://github.com/webpack-contrib/purifycss-webpack" target="_blank">PurifyCSS
+                Plugin</Link>!</ListItem></Appear>
               <Appear><ListItem>Whitelist CSS modules rules</ListItem></Appear>
             </List>
           </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="extra1">
+            <Heading caps size={2} textColor="tertiary">
+              Extra 1
+            </Heading>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Transpilling less
+            </Heading>
+            <List>
+              <Appear><ListItem>Include polyfills only for not supported features</ListItem></Appear>
+              <Appear><ListItem>Using our <code>browserslist</code> for supported browsers</ListItem></Appear>
+              <Appear><ListItem>Remove polyfills with <Link
+                href="https://github.com/babel/babel/tree/master/packages/babel-preset-env"
+                target="_blank">@babel/preset-env</Link> with <code>useBuiltIns:
+                'entry'</code></ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="bundle-splitting">
+            <Heading caps size={2} textColor="tertiary">
+              Bundle Splitting
+            </Heading>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              The Problem
+            </Heading>
+            <List>
+              <Appear><ListItem>One big JS file</ListItem></Appear>
+              <Appear><ListItem>Slow initial load time</ListItem></Appear>
+              <Appear><ListItem>App code change destroys the cache</ListItem></Appear>
+              <Appear><ListItem><em>Solution:</em> split into several files</ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Vendor bundle
+            </Heading>
+            <List>
+              <Appear><ListItem>Create an entry specifying all your vendor modules</ListItem></Appear>
+              <Appear><ListItem>It's a new entry or <strong>entry chunk</strong></ListItem></Appear>
+            </List>
+            <Appear><Image src={images.vendor1} /></Appear>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Vendor bundle - commons chunks
+            </Heading>
+            <List>
+              <Appear><ListItem>Extract common modules with <Link
+                href="https://webpack.js.org/plugins/commons-chunk-plugin/">CommonsChunkPlugin</Link></ListItem></Appear>
+              <Appear><ListItem>Let's use <strong>minChunks</strong> option</ListItem></Appear>
+            </List>
+            <Appear><Image src={images.vendor2} height={400} /></Appear>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Automatic vendor bundle
+            </Heading>
+            <List>
+              <Appear><ListItem>Extract common modules if they are in <code>node_modules</code></ListItem></Appear>
+              <Appear><ListItem><code>minChunks</code> can be a function <code>(module, count) =>
+                Boolean</code></ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Module
+            </Heading>
+            <List>
+              <Appear><ListItem><code>resource</code> - full path</ListItem></Appear>
+              <Appear><ListItem><code>context</code> - path to the containing directory</ListItem></Appear>
+              <Appear><ListItem><code>rawRequest</code> - unresolved path</ListItem></Appear>
+              <Appear><ListItem><code>userRequest</code> - user request with a query</ListItem></Appear>
+              <Appear><ListItem><code>chunks</code> - in which chunks this modules is contained</ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="caching">
+            <Heading caps size={2} textColor="tertiary">
+              Caching
+            </Heading>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Requirements
+            </Heading>
+            <List>
+              <Appear><ListItem>Invalidate browser cache when the content is changed</ListItem></Appear>
+              <Appear><ListItem>Do it as rear as possible</ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Steps
+            </Heading>
+            <List>
+              <Appear><ListItem>Use <code>[chunkhash]</code> placeholder</ListItem></Appear>
+              <Appear><ListItem>Extract manifest by specifying not existing chunk name in CommonsChunkPlugin</ListItem></Appear>
+              <Appear><ListItem>
+                Use <Link href="https://webpack.js.org/plugins/named-modules-plugin/"
+                          target="_blank">NamedModulesPlugin</Link> or
+                <Link href="https://webpack.js.org/plugins/hashed-module-ids-plugin/"
+                      target="_blank">HashedModuleIdsPlugin</Link> (preferable)
+              </ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="code-splitting">
+            <Heading caps size={2} textColor="tertiary">
+              Code Splitting
+            </Heading>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Code Splitting - key concepts
+            </Heading>
+            <List>
+              <Appear><ListItem>Decrease the size of initial chunk</ListItem></Appear>
+              <Appear><ListItem>Load chunks on demand</ListItem></Appear>
+              <Appear><ListItem>For example, chunks can be loaded on click, on route match, on
+                scroll</ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              <code>import()</code>
+            </Heading>
+            <CodePane
+              textSize={codeFontSize}
+              lang="javascript"
+              source={require('!raw-loader!./examples/import.example')}
+            />
+            <List>
+              <Appear><ListItem>Use <Link href="https://www.npmjs.com/package/@babel/plugin-syntax-dynamic-import"
+                                          target="_blank">@babel/plugin-syntax-dynamic-import</Link> to
+                support <code>import()</code> syntax</ListItem></Appear>
+              <Appear><ListItem>Handle module when promise is resolved</ListItem></Appear>
+              <Appear><ListItem>Add <code>chunkFilename</code> to output config to control the chunk file
+                name</ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Code Splitting in React
+            </Heading>
+            <CodePane
+              textSize={codeFontSize}
+              lang="javascript"
+              source={require('!raw-loader!./examples/react-code-splitting.example')}
+            />
+            <List>
+              <Appear><ListItem>Use <Link href="https://github.com/thejameskyle/react-loadable"
+                                          target="_blank">react-loadable</Link> to
+                render the loaded components</ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Async Common Chunks
+            </Heading>
+            <List>
+              <Appear><ListItem>You can extract common modules of your async chunks</ListItem></Appear>
+              <Appear><ListItem>It will create one more async chunk that will be loaded with its
+                parent</ListItem></Appear>
+              <Appear><ListItem>Use <code>async</code> and <code>children</code> properties of
+                CommonsChunkPlugin</ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="extra2">
+            <Heading caps size={2} textColor="tertiary">
+              Extra 2
+            </Heading>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Scope Hoisting
+            </Heading>
+            <List>
+              <Appear><ListItem>Webpack wraps modules into closures</ListItem></Appear>
+              <Appear><ListItem>It slows down code execution</ListItem></Appear>
+              <Appear><ListItem><em>Solution:</em> Try to group modules (if possible) in fewer
+                closures</ListItem></Appear>
+              <Appear><ListItem>Use <Link href="https://webpack.js.org/plugins/module-concatenation-plugin/"
+                                          target="_blank">ModuleConcatenationPlugin</Link></ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Image Optimization
+            </Heading>
+            <List>
+              <Appear><ListItem>Optimize your images (png, jpeg, gif, svg)</ListItem></Appear>
+              <Appear><ListItem>Sometimes significantly reduces the assets size</ListItem></Appear>
+              <Appear><ListItem>Use <Link href="https://github.com/tcoopman/image-webpack-loader"
+                                          target="_blank">image-loader</Link></ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Versioning
+            </Heading>
+            <List>
+              <Appear><ListItem>Attach Git tag or commit hash for easier debug</ListItem></Appear>
+              <Appear><ListItem>Use <Link href="https://webpack.js.org/plugins/banner-plugin/"
+                                          target="_blank">BannerPlugin</Link> with <Link
+                href="https://github.com/pirelenito/git-revision-webpack-plugin" target="_blank">Git Revision Webpack
+                Plugin</Link></ListItem></Appear>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="analyze">
+            <Heading caps size={2} textColor="tertiary">
+              Analyze
+            </Heading>
+          </Slide>
+          <Slide transition={slideTransition}>
+            <Heading>
+              Build Analysis
+            </Heading>
+            <List>
+              <Appear><ListItem>Analyze your bundles</ListItem></Appear>
+              <Appear><ListItem>Find common modules and extract</ListItem></Appear>
+              <Appear><ListItem>Find wrong modules in your chunks</ListItem></Appear>
+              <Appear><ListItem>Tools:</ListItem></Appear>
+              <List>
+                <Appear><ListItem>Dependency Graph: <Link href="http://webpack.github.io/analyse/#modules"
+                                                          target="_blank">link</Link></ListItem></Appear>
+                <Appear><ListItem>Bundle Analyzer: <Link
+                  href="https://github.com/webpack-contrib/webpack-bundle-analyzer"
+                  target="_blank">link</Link></ListItem></Appear>
+              </List>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary" id="links">
+            <Heading caps size={2} textColor="tertiary">
+              Further Materials
+            </Heading>
+          </Slide>
+
+          <Slide transition={slideTransition}>
+            <Heading>
+              Further Materials
+            </Heading>
+            <List>
+              <ListItem>
+                <Link href="https://webpack.js.org/concepts/" target="_blank">Official Webpack Documentation</Link>
+              </ListItem>
+              <ListItem>
+                <Link href="https://webpack.js.org/glossary/" target="_blank">Webpack Glossary</Link>
+              </ListItem>
+              <ListItem>
+                <Link href="https://survivejs.com/webpack/foreword/" target="_blank">SurviveJS - Webpack</Link>
+              </ListItem>
+              <ListItem>
+                <Link href="https://medium.com/webpack" target="_blank">Medium Webpack</Link>
+              </ListItem>
+              <ListItem>
+                <Link href="https://twitter.com/TheLarkInn" target="_blank">@TheLarkInn - Webpack maintainer</Link>
+              </ListItem>
+            </List>
+          </Slide>
+          <Slide transition={slideTransition} bgColor="secondary">
+            <Heading caps size={2} textColor="tertiary">
+              Q/A
+            </Heading>
+          </Slide>
+
+          <Slide transition={slideTransition} bgColor="secondary">
+            <Heading caps size={2} textColor="tertiary">
+              Thank you! Happy bundling!
+            </Heading>
+            <Link textColor="white" href="https://github.com/mike1808/jsconf-17-webpack-presentation"
+                  target="_blank">Source code</Link>
+          </Slide>
+
         </Deck>
-        <Footer />
       </div>
     );
   }

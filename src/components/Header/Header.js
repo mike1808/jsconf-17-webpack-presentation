@@ -16,15 +16,23 @@ const Container = styled('div')`
   flex-direction: row;
   font-size: 24px;
   color: #fff;
+  z-index: 1;
+`;
+
+const Me = styled('div')`
+`;
+
+const MeLink = styled('a')`
+  color: white;
 `;
 
 
-const Footer = () => (
+const Header = () => (
   <Container>
     <Logo />
     <div>Yerevan, Armenia 2017</div>
-    <div>Mikael Manukyan</div>
+    <Me><MeLink href="http://mmanukyan.io" target="_blank">Mikael Manukyan</MeLink></Me>
   </Container>
 );
 
-export default Footer;
+export default Header;
